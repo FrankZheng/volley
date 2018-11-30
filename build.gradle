@@ -55,5 +55,10 @@ tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xep:ParameterComment:ERROR"
 }
 
+task repackageVolley(type: Exec) {
+    workingDir 'tools'
+    commandLine 'java', '-jar', 'jarjar-1.4.jar', 'process', 'rules.txt', '../build/intermediates/bundles/release/classes.jar', '../build/intermediates/bundles/release/classes.jar' 
+}
+
 apply from: 'rules.gradle'
 apply from: 'bintray.gradle'
