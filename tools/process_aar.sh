@@ -13,7 +13,20 @@ rules_txt=$(pwd)/rules.txt
 domain=xqlabserv
 
 pushd $aar_dir
-unzip volley-release.aar
+aar_files=($(ls *release.aar 2>/dev/null))
+aar_num=${#aar_files[@]}
+if [ "$aar_num" = "0" ]; then
+	echo "No aar files, something must be wrong, please check!"
+	exit 2
+fi
+
+if [ "$aar_num" -gt "1" ]; then
+	echo "More than one aar files, something must be wrong, please check!"
+	exit 3
+fi
+
+aar="${aar_files[0]}"
+unzip $aar
 # manifest
 sed -i '' "s/com.android.volley/com.${domain}.volley/g" AndroidManifest.xml
 # proguard
@@ -28,8 +41,8 @@ rm -f annotations.zip && zip -r annotations.zip com && rm -rf com
 java -jar $jarjar process $rules_txt classes.jar classes.jar
 
 # zip
-rm -rf volley-release.aar && zip volley-release.aar *
+rm -rf $aar && zip $aar *
 
 # cleanup
-ls | grep -v volley-release.aar | xargs rm 
+ls | grep -v $aar | xargs rm 
 popd
