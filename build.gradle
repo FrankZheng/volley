@@ -16,49 +16,71 @@
 
 buildscript {
     repositories {
+        google()
         jcenter()
     }
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.3'
+        classpath 'com.android.tools.build:gradle:3.2.1'
+	    classpath 'com.novoda:bintray-release:0.9'
     }
 }
 
+/*
 plugins {
     id "com.github.sherter.google-java-format" version "0.6"
     id "net.ltgt.errorprone" version "0.0.13"
 }
 
+
 googleJavaFormat {
     toolVersion = '1.5'
     options style: 'AOSP'
 }
+*/
 
 apply plugin: 'com.android.library'
 
-repositories {
-    jcenter()
-    maven {
-        url 'https://maven.google.com/'
-        name 'Google'
+allprojects {
+    repositories {
+        google()
+        jcenter()
+
     }
 }
 
+
+/*
 group = 'com.android.volley'
 version = '1.2.0-SNAPSHOT'
+*/
 
+/*
 android {
     compileSdkVersion 25
-    buildToolsVersion = '25.0.2'
+    buildToolsVersion = '25.0.3'
 }
+*/
 
+/*
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xep:ParameterComment:ERROR"
 }
 
-task repackageVolley(type: Exec) {
-    workingDir 'tools'
-    commandLine 'java', '-jar', 'jarjar-1.4.jar', 'process', 'rules.txt', '../build/intermediates/bundles/release/classes.jar', '../build/intermediates/bundles/release/classes.jar' 
+*/
+
+afterEvaluate {
+    task bundleReleaseAar.finalizedBy(processAar)
 }
+
+
+task processAar(type: Exec) {
+    workingDir 'tools'
+    commandLine './process_aar.sh', '../build/outputs/aar'
+}
+
+tasks.withType(Javadoc).all { enabled = false }
+
 
 apply from: 'rules.gradle'
 apply from: 'bintray.gradle'
