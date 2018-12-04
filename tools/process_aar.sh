@@ -10,7 +10,7 @@ fi
 aar_dir=$1
 jarjar=$(pwd)/jarjar-1.4.jar
 rules_txt=$(pwd)/rules.txt
-domain=xqlabserv
+domain=vungle
 
 pushd $aar_dir
 aar_files=($(ls *release.aar 2>/dev/null))
